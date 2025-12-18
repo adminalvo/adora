@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "home": {
+    "title": "Adora Fashion",
+    "subtitle": "Beautiful clothes, beautiful prices",
+    "cta": "Explore Products",
+    "featured": "Featured Products",
+    "newArrivals": "New Arrivals"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "Adora Fashion is an online store offering quality clothing with the latest fashion trends."
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send"
+  },
+  "footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "rights": "All rights reserved"
+  },
+  "cookie": {
+    "message": "This website uses cookies to ensure you get the best experience.",
+    "accept": "Accept",
+    "decline": "Decline"
+  }
+}
+

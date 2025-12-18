@@ -1,0 +1,154 @@
+'use client';
+
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
+
+export default function Register() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (password !== confirmPassword) {
+      setError('Şifrələr uyğun deyil');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Şifrə ən azı 6 simvol olmalıdır');
+      return;
+    }
+
+    setLoading(true);
+
+    const success = await register(name, email, password);
+    
+    if (success) {
+      router.push('/');
+    } else {
+      setError('Bu email ilə hesab artıq mövcuddur');
+    }
+    
+    setLoading(false);
+  };
+
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-20">
+        <div className="max-w-md mx-auto px-4">
+          <div className="bg-white rounded-2xl shadow-xl p-8">
+            <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Qeydiyyat</h1>
+            
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Ad Soyad
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  placeholder="Adınız və Soyadınız"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  placeholder="email@example.com"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Şifrə
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                  Şifrəni Təsdiqlə
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Qeydiyyat edilir...' : 'Qeydiyyatdan Keç'}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
+                Artıq hesabınız var?{' '}
+                <a href="/login" className="text-yellow-600 hover:text-yellow-700 font-medium">
+                  Giriş edin
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'az', ['common'])),
+    },
+  };
+};

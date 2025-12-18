@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "home": "Ana Səhifə",
+    "about": "Haqqımızda",
+    "contact": "Əlaqə",
+    "admin": "Admin"
+  },
+  "home": {
+    "title": "Adora Fashion",
+    "subtitle": "Gözəl geyimlər, gözəl qiymətlər",
+    "cta": "Məhsulları Kəşf Edin",
+    "featured": "Seçilmiş Məhsullar",
+    "newArrivals": "Yeni Gəlişlər"
+  },
+  "about": {
+    "title": "Haqqımızda",
+    "description": "Adora Fashion, ən son moda trendləri ilə keyfiyyətli geyimlər təqdim edən bir onlayn mağazadır."
+  },
+  "contact": {
+    "title": "Əlaqə",
+    "name": "Ad",
+    "email": "E-poçt",
+    "message": "Mesaj",
+    "send": "Göndər"
+  },
+  "footer": {
+    "privacy": "Məxfilik Siyasəti",
+    "terms": "İstifadə Şərtləri",
+    "rights": "Bütün hüquqlar qorunur"
+  },
+  "cookie": {
+    "message": "Bu veb-sayt sizə ən yaxşı təcrübəni təmin etmək üçün cookie-lərdən istifadə edir.",
+    "accept": "Qəbul Et",
+    "decline": "Rədd Et"
+  }
+}
+
