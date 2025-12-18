@@ -137,61 +137,6 @@ export default function About() {
           </div>
         </section>
 
-        {/* Team Section */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">Komandamız</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="relative w-48 h-48 mx-auto mb-4 rounded-full overflow-hidden shadow-lg">
-                  <Image
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80"
-                    alt="Team Member"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Aysel Məmmədova</h3>
-                <p className="text-yellow-600 mb-2">CEO & Founder</p>
-                <p className="text-gray-600">
-                  Moda dünyasında 15 illik təcrübə ilə komandamızı idarə edir.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="relative w-48 h-48 mx-auto mb-4 rounded-full overflow-hidden shadow-lg">
-                  <Image
-                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80"
-                    alt="Team Member"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Leyla Həsənova</h3>
-                <p className="text-yellow-600 mb-2">Dizayn Direktoru</p>
-                <p className="text-gray-600">
-                  Yeni kolleksiyaların yaradılmasında məsuliyyət daşıyır.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="relative w-48 h-48 mx-auto mb-4 rounded-full overflow-hidden shadow-lg">
-                  <Image
-                    src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80"
-                    alt="Team Member"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Nərgiz Əliyeva</h3>
-                <p className="text-yellow-600 mb-2">Müştəri Xidmətləri</p>
-                <p className="text-gray-600">
-                  Müştərilərimizə ən yaxşı xidməti göstərmək üçün çalışır.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </>

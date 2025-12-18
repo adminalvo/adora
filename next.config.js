@@ -6,6 +6,19 @@ const nextConfig = {
     defaultLocale: 'az',
     localeDetection: false,
   },
+  images: {
+    domains: ['images.unsplash.com', 'supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig
