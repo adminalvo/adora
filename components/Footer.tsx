@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
-import Logo from './Logo';
 
 export default function Footer() {
   const { t } = useTranslation('common');
@@ -14,7 +14,17 @@ export default function Footer() {
           {/* Brand Section */}
           <div>
             <div className="mb-4">
-              <Logo />
+              <div className="flex items-center">
+                <div className="rounded-full bg-white p-1.5 shadow-md border-2 border-yellow-100">
+                  <Image
+                    src="/adora-logo.png"
+                    alt="Adora Fashion Logo"
+                    width={60}
+                    height={60}
+                    className="h-14 w-14 object-contain rounded-full"
+                  />
+                </div>
+              </div>
             </div>
             <p className="text-gray-600 text-sm mb-4">
               Gözəl geyimlər, gözəl qiymətlər. Ən son moda trendləri ilə.
