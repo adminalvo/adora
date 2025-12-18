@@ -73,12 +73,6 @@ export default function Header() {
             <Link href="/admin" className="text-gray-700 hover:text-yellow-500 transition-colors font-medium">
               {t('nav.admin')}
             </Link>
-            <a href="tel:+994707800818" className="text-gray-700 hover:text-yellow-500 transition-colors font-medium flex items-center space-x-1">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>+994 70 780 08 18</span>
-            </a>
 
             {/* Cart Icon */}
             <Link href="/cart" className="relative text-gray-700 hover:text-yellow-500 transition-colors">
@@ -262,17 +256,6 @@ export default function Header() {
                 </svg>
                 {t('nav.admin')}
               </Link>
-              
-              <a
-                href="tel:+994707800818"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 font-medium text-lg group"
-              >
-                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                +994 70 780 08 18
-              </a>
 
               <Link
                 href="/cart"

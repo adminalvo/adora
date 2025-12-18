@@ -3,6 +3,7 @@ import { appWithTranslation } from 'next-i18next';
 import '../styles/globals.css';
 import Preloader from '@/components/Preloader';
 import CookieBanner from '@/components/CookieBanner';
+import SocialMediaFloat from '@/components/SocialMediaFloat';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CartProvider } from '@/contexts/CartContext';
 import { FavoritesProvider } from '@/contexts/FavoritesContext';
@@ -15,6 +16,7 @@ function App({ Component, pageProps }: AppProps) {
           <Preloader />
           <Component {...pageProps} />
           <CookieBanner />
+          <SocialMediaFloat />
         </FavoritesProvider>
       </CartProvider>
     </AuthProvider>
