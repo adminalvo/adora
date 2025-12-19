@@ -1,11 +1,16 @@
 export interface Product {
-  id: number;
+  id: string;
   name: string;
-  description: string;
+  description: string | null;
   price: number;
-  image: string;
-  category: string;
+  image?: string | null;
+  image_url?: string | null;
+  category?: string;
+  category_id?: string | null;
   stock: number;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface User {

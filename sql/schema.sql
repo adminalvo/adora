@@ -245,3 +245,31 @@ CREATE POLICY "Users can create their own order items"
       AND orders.user_id = auth.uid()
     )
   );
+
+-- Contact Messages table
+CREATE TABLE IF NOT EXISTS public.contact_messages (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT false NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Index for contact messages
+CREATE INDEX IF NOT EXISTS idx_contact_messages_created ON public.contact_messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_read ON public.contact_messages(is_read);
+
+-- Enable RLS on contact_messages
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+
+-- Contact messages policies (public can insert, admin can read)
+CREATE POLICY "Anyone can submit contact messages"
+  ON public.contact_messages FOR INSERT
+  WITH CHECK (true);
+
+-- Note: Admin read/update policies should be added via service role key or admin role
+-- For now, we'll allow authenticated users to read (can be restricted later)
+CREATE POLICY "Authenticated users can view contact messages"
+  ON public.contact_messages FOR SELECT
+  USING (auth.role() = 'authenticated');

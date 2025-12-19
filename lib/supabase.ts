@@ -181,6 +181,25 @@ export type Database = {
           subtotal: number;
         };
       };
+      contact_messages: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          message: string;
+          is_read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          name: string;
+          email: string;
+          message: string;
+          is_read?: boolean;
+        };
+        Update: {
+          is_read?: boolean;
+        };
+      };
     };
   };
 };
