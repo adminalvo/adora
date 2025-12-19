@@ -53,14 +53,14 @@ export default function Header() {
   return (
     <header className="bg-white shadow-md sticky top-0 z-40">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-20 py-2">
           {/* Brand Name */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center flex-shrink-0">
             <Logo />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 flex-1 justify-end">
             <Link href="/" className="text-gray-700 hover:text-yellow-500 transition-colors font-medium">
               {t('nav.home')}
             </Link>
@@ -118,7 +118,7 @@ export default function Header() {
             )}
 
             {/* Language Dropdown */}
-            <div className="relative border-l pl-4 ml-4" ref={langDropdownRef}>
+            <div className="relative border-l pl-4 ml-4 flex-shrink-0" ref={langDropdownRef}>
               <button
                 onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
                 className="flex items-center space-x-2 px-4 py-2 bg-yellow-100 hover:bg-yellow-200 rounded-lg transition-colors"
@@ -194,7 +194,7 @@ export default function Header() {
         >
           {/* Menu Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-50 to-white">
-            <Logo className="text-lg" />
+            <Logo />
             <button
               onClick={() => setIsMenuOpen(false)}
               className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-yellow-100 transition-colors"
