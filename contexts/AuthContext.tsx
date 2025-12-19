@@ -29,6 +29,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check for existing session
     const initAuth = async () => {
       try {
+        // Check if Supabase is configured
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+          console.warn('Supabase not configured. Authentication features will not work.');
+          setLoading(false);
+          return;
+        }
+
         const supabase = createClient();
         const { data: { session } } = await supabase.auth.getSession();
         
