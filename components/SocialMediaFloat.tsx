@@ -14,7 +14,7 @@ export default function SocialMediaFloat() {
           href="https://www.instagram.com/adora.fashiioon?utm_source=qr&igsh=MWNhdHR0ZHhtY2F5MA%3D%3D"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110"
+          className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white p-4 rounded-full shadow-lg transition-opacity hover:opacity-90"
           aria-label="Instagram"
         >
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
