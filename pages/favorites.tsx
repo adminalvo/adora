@@ -44,9 +44,9 @@ export default function Favorites() {
             {favorites.map((product) => (
               <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
                 <div className="relative h-64 bg-gray-100">
-                  {product.image ? (
+                  {(product.image || product.image_url) ? (
                     <Image
-                      src={product.image}
+                      src={product.image || product.image_url || ''}
                       alt={product.name}
                       fill
                       className="object-cover"

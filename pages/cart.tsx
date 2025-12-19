@@ -59,9 +59,9 @@ export default function Cart() {
               {items.map((item) => (
                 <div key={item.product.id} className="bg-white rounded-xl shadow-lg p-6 flex gap-6">
                   <div className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    {item.product.image ? (
+                    {(item.product.image || item.product.image_url) ? (
                       <Image
-                        src={item.product.image}
+                        src={item.product.image || item.product.image_url || ''}
                         alt={item.product.name}
                         width={128}
                         height={128}

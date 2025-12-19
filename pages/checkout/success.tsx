@@ -1,11 +1,22 @@
+'use client';
+
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default function CheckoutSuccess() {
   const router = useRouter();
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+
+  useEffect(() => {
+    const order = router.query.order as string;
+    if (order) {
+      setOrderNumber(order);
+    }
+  }, [router.query]);
 
   return (
     <>
@@ -19,23 +30,28 @@ export default function CheckoutSuccess() {
               </svg>
             </div>
             
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Sifarişiniz Qəbul Edildi!</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Sifariş Təsdiqləndi!</h1>
+            {orderNumber && (
+              <p className="text-lg text-gray-700 mb-2">
+                Sifariş nömrəniz: <span className="font-bold text-yellow-600">{orderNumber}</span>
+              </p>
+            )}
             <p className="text-gray-600 mb-8 text-lg">
-              Sifarişiniz uğurla qeydə alındı. Tezliklə sizinlə əlaqə saxlayacağıq.
+              Sifarişiniz qəbul edildi. Tezliklə sizinlə əlaqə saxlayacağıq.
             </p>
             
-            <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => router.push('/')}
-                className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-3 rounded-lg transition-colors"
+                className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
               >
                 Ana Səhifəyə Qayıt
               </button>
               <button
-                onClick={() => router.push('/favorites')}
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-lg transition-colors"
+                onClick={() => router.push('/contact')}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-8 py-3 rounded-lg transition-colors"
               >
-                Favorilərə Bax
+                Əlaqə
               </button>
             </div>
           </div>
