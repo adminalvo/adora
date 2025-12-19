@@ -54,7 +54,7 @@ export default function Register() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-20">
+      <main className="min-h-screen bg-white py-20">
         <div className="max-w-md mx-auto px-4">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Qeydiyyat</h1>
@@ -129,7 +129,7 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Qeydiyyat edilir...' : 'Qeydiyyatdan Keç'}
               </button>
@@ -138,7 +138,7 @@ export default function Register() {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Artıq hesabınız var?{' '}
-                <a href="/login" className="text-yellow-600 hover:text-yellow-700 font-medium">
+                <a href="/login" className="text-black hover:text-gray-700 font-medium">
                   Giriş edin
                 </a>
               </p>

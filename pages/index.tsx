@@ -121,7 +121,7 @@ export default function Home() {
                     placeholder="Məhsul axtar..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                   />
                   <svg
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -139,7 +139,7 @@ export default function Home() {
                 <select
                   value={selectedCategory || ''}
                   onChange={(e) => setSelectedCategory(e.target.value || null)}
-                  className="w-full md:w-64 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full md:w-64 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                 >
                   <option value="">Bütün Kateqoriyalar</option>
                   {categories.map((cat) => (
@@ -154,7 +154,7 @@ export default function Home() {
         </section>
 
         {/* Products Section */}
-        <section className="py-16 bg-gradient-to-b from-yellow-50 to-white">
+        <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
@@ -171,7 +171,7 @@ export default function Home() {
 
             {loading ? (
               <div className="flex justify-center items-center py-20">
-                <div className="w-12 h-12 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin"></div>
               </div>
             ) : error ? (
               <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg text-center">
@@ -196,7 +196,7 @@ export default function Home() {
                       setSearchQuery('');
                       setSelectedCategory(null);
                     }}
-                    className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+                    className="bg-black hover:bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
                   >
                     Filtrləri Təmizlə
                   </button>

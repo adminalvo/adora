@@ -16,7 +16,7 @@ export default function Cart() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-20">
+        <main className="min-h-screen bg-white py-20">
           <div className="max-w-4xl mx-auto px-4">
             <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">Səbət</h1>
             <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
@@ -27,7 +27,7 @@ export default function Cart() {
               <p className="text-gray-600 mb-8">Məhsul əlavə etmək üçün ana səhifəyə qayıdın</p>
               <button
                 onClick={() => router.push('/')}
-                className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+                className="bg-black hover:bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
               >
                 Alış-verişə Davam Et
               </button>
@@ -94,7 +94,7 @@ export default function Cart() {
                       </div>
                       
                       <div className="flex items-center space-x-4">
-                        <span className="text-2xl font-bold text-yellow-600">
+                        <span className="text-2xl font-bold text-black">
                           {(item.product.price * item.quantity).toFixed(2)} ₼
                         </span>
                         <button
@@ -129,14 +129,14 @@ export default function Cart() {
                   <div className="border-t pt-4">
                     <div className="flex justify-between text-2xl font-bold text-gray-900">
                       <span>Ümumi:</span>
-                      <span className="text-yellow-600">{getTotalPrice().toFixed(2)} ₼</span>
+                      <span className="text-black">{getTotalPrice().toFixed(2)} ₼</span>
                     </div>
                   </div>
                 </div>
 
                 <button
                   onClick={() => router.push('/checkout')}
-                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-4 rounded-lg transition-colors text-lg"
+                  className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-4 rounded-lg transition-colors text-lg"
                 >
                   Sifarişi Tamamla
                 </button>

@@ -16,7 +16,7 @@ export default function Favorites() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-20">
+        <main className="min-h-screen bg-white py-20">
           <div className="max-w-4xl mx-auto px-4">
             <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">Favori Məhsullar</h1>
             <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
@@ -71,10 +71,10 @@ export default function Favorites() {
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">{product.name}</h3>
                   <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
                   <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold text-yellow-600">{product.price.toFixed(2)} ₼</span>
+                    <span className="text-2xl font-bold text-black">{product.price.toFixed(2)} ₼</span>
                     <button
                       onClick={() => addToCart(product)}
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                      className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors font-medium"
                     >
                       Səbətə At
                     </button>

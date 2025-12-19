@@ -54,7 +54,7 @@ export default function BannerSlider() {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
+            className={`absolute inset-0 transition-opacity duration-500 ${
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -71,7 +71,7 @@ export default function BannerSlider() {
               <div className="text-center text-white px-4 relative z-10">
                 <h2 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">{slide.title}</h2>
                 <p className="text-xl md:text-2xl mb-8 drop-shadow-lg">{slide.subtitle}</p>
-                <button className="bg-white text-yellow-600 font-semibold px-8 py-4 rounded-lg text-lg hover:bg-yellow-50 transition-colors shadow-lg">
+                <button className="bg-white text-black font-semibold px-8 py-4 rounded-lg text-lg hover:bg-gray-100 transition-colors shadow-lg">
                   {t('home.cta')}
                 </button>
               </div>
@@ -83,7 +83,7 @@ export default function BannerSlider() {
       {/* Navigation Arrows */}
       <button
         onClick={goToPrevious}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all z-10"
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-colors z-10"
         aria-label="Previous slide"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +106,7 @@ export default function BannerSlider() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
+            className={`w-3 h-3 rounded-full transition-colors ${
               index === currentSlide
                 ? 'bg-white w-8'
                 : 'bg-white/50 hover:bg-white/75'

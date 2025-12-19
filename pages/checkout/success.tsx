@@ -21,7 +21,7 @@ export default function CheckoutSuccess() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-20">
+      <main className="min-h-screen bg-white py-20">
         <div className="max-w-2xl mx-auto px-4">
           <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -33,7 +33,7 @@ export default function CheckoutSuccess() {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Sifariş Təsdiqləndi!</h1>
             {orderNumber && (
               <p className="text-lg text-gray-700 mb-2">
-                Sifariş nömrəniz: <span className="font-bold text-yellow-600">{orderNumber}</span>
+                Sifariş nömrəniz: <span className="font-bold text-black">{orderNumber}</span>
               </p>
             )}
             <p className="text-gray-600 mb-8 text-lg">
@@ -43,7 +43,7 @@ export default function CheckoutSuccess() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => router.push('/')}
-                className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+                className="bg-black hover:bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
               >
                 Ana Səhifəyə Qayıt
               </button>

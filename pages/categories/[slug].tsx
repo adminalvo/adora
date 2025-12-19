@@ -73,9 +73,9 @@ export default function CategoryPage() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <main className="min-h-screen bg-white flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin mx-auto"></div>
+            <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto"></div>
             <p className="mt-4 text-gray-600">Yüklənir...</p>
           </div>
         </main>
@@ -88,12 +88,12 @@ export default function CategoryPage() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-20">
+        <main className="min-h-screen bg-white py-20">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Kateqoriya Tapılmadı</h1>
             <button
               onClick={() => router.push('/')}
-              className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+              className="bg-black hover:bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
             >
               Ana Səhifəyə Qayıt
             </button>

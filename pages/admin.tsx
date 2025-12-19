@@ -46,11 +46,78 @@ export default function Admin() {
     image_url: '',
   });
 
+  const [adminPassword, setAdminPassword] = useState('');
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login');
+    if (!authLoading) {
+      // Check if admin password is set in sessionStorage
+      const adminAuth = sessionStorage.getItem('admin_auth');
+      if (adminAuth === '202505') {
+        setIsAdmin(true);
+      } else {
+        setShowPasswordModal(true);
+      }
     }
-  }, [user, authLoading, router]);
+  }, [authLoading]);
+
+  const handleAdminLogin = () => {
+    if (adminPassword === '202505') {
+      sessionStorage.setItem('admin_auth', '202505');
+      setIsAdmin(true);
+      setShowPasswordModal(false);
+      setAdminPassword('');
+    } else {
+      alert('Yanlış şifrə');
+    }
+  };
+
+  if (showPasswordModal) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-white flex items-center justify-center">
+          <div className="max-w-md w-full mx-auto px-4">
+            <div className="bg-white rounded-lg shadow-xl border border-black p-8">
+              <h2 className="text-2xl font-bold text-black mb-6 text-center">Admin Girişi</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-black mb-2">Şifrə</label>
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+                    className="w-full px-4 py-3 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                    placeholder="Admin şifrəsi"
+                    autoFocus
+                  />
+                </div>
+                <button
+                  onClick={handleAdminLogin}
+                  className="w-full bg-black text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors"
+                >
+                  Giriş Et
+                </button>
+                <button
+                  onClick={() => router.push('/')}
+                  className="w-full border border-black text-black font-semibold py-3 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  Geri
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   useEffect(() => {
     if (user) {
@@ -194,9 +261,9 @@ export default function Admin() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <main className="min-h-screen bg-white flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin mx-auto"></div>
+            <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto"></div>
             <p className="mt-4 text-gray-600">Yüklənir...</p>
           </div>
         </main>
@@ -214,13 +281,13 @@ export default function Admin() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white">
+      <main className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 px-8 py-6">
+            <div className="bg-black px-8 py-6">
               <h1 className="text-3xl font-bold text-white">Admin Paneli</h1>
-              <p className="text-yellow-100 mt-1">Məhsulları və mesajları idarə edin</p>
+              <p className="text-gray-300 mt-1">Məhsulları və mesajları idarə edin</p>
             </div>
 
             {/* Tabs */}
@@ -230,7 +297,7 @@ export default function Admin() {
                   onClick={() => setActiveTab('products')}
                   className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'products'
-                      ? 'text-yellow-600 border-b-2 border-yellow-600'
+                      ? 'text-black border-b-2 border-black'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -240,7 +307,7 @@ export default function Admin() {
                   onClick={() => setActiveTab('categories')}
                   className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'categories'
-                      ? 'text-yellow-600 border-b-2 border-yellow-600'
+                      ? 'text-black border-b-2 border-black'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -250,7 +317,7 @@ export default function Admin() {
                   onClick={() => setActiveTab('orders')}
                   className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'orders'
-                      ? 'text-yellow-600 border-b-2 border-yellow-600'
+                      ? 'text-black border-b-2 border-black'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -260,7 +327,7 @@ export default function Admin() {
                   onClick={() => setActiveTab('messages')}
                   className={`px-6 py-4 font-medium text-sm transition-colors relative whitespace-nowrap ${
                     activeTab === 'messages'
-                      ? 'text-yellow-600 border-b-2 border-yellow-600'
+                      ? 'text-black border-b-2 border-black'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -294,7 +361,7 @@ export default function Admin() {
                         });
                         setShowProductModal(true);
                       }}
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
+                      className="bg-black hover:bg-gray-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -354,7 +421,7 @@ export default function Admin() {
                                   });
                                   setShowProductModal(true);
                                 }}
-                                className="text-yellow-600 hover:text-yellow-900 mr-4"
+                                className="text-black hover:text-gray-700 mr-4"
                               >
                                 Düzəlt
                               </button>
@@ -383,7 +450,7 @@ export default function Admin() {
                             <div className="flex items-center space-x-2 mb-2">
                               <h3 className="text-lg font-semibold text-gray-900">Sifariş #{order.order_number}</h3>
                               <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                                order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                order.status === 'pending' ? 'bg-gray-100 text-gray-800' :
                                 order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                                 order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
                                 order.status === 'delivered' ? 'bg-green-100 text-green-800' :
@@ -406,7 +473,7 @@ export default function Admin() {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-yellow-600 mb-2">{parseFloat(order.total_amount).toFixed(2)} ₼</p>
+                            <p className="text-2xl font-bold text-black mb-2">{parseFloat(order.total_amount).toFixed(2)} ₼</p>
                             <select
                               value={order.status}
                               onChange={async (e) => {
@@ -470,7 +537,7 @@ export default function Admin() {
                         });
                         setShowCategoryModal(true);
                       }}
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
+                      className="bg-black hover:bg-gray-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -498,7 +565,7 @@ export default function Admin() {
                               });
                               setShowCategoryModal(true);
                             }}
-                            className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm"
+                            className="flex-1 bg-black hover:bg-gray-800 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm"
                           >
                             Düzəlt
                           </button>
@@ -541,7 +608,7 @@ export default function Admin() {
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`border rounded-lg p-6 ${!message.is_read ? 'bg-yellow-50 border-yellow-200' : 'bg-white border-gray-200'}`}
+                            className={`border rounded-lg p-6 ${!message.is_read ? 'bg-gray-50 border-gray-300' : 'bg-white border-gray-200'}`}
                       >
                         <div className="flex justify-between items-start mb-4">
                           <div>
@@ -622,7 +689,7 @@ export default function Admin() {
                   type="text"
                   value={productForm.name}
                   onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                   required
                 />
               </div>
@@ -633,7 +700,7 @@ export default function Admin() {
                   value={productForm.description}
                   onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                 />
               </div>
 
@@ -645,7 +712,7 @@ export default function Admin() {
                     step="0.01"
                     value={productForm.price}
                     onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     required
                   />
                 </div>
@@ -656,7 +723,7 @@ export default function Admin() {
                     type="number"
                     value={productForm.stock}
                     onChange={(e) => setProductForm({ ...productForm, stock: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     required
                   />
                 </div>
@@ -668,7 +735,7 @@ export default function Admin() {
                   type="url"
                   value={productForm.image_url}
                   onChange={(e) => setProductForm({ ...productForm, image_url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
@@ -678,7 +745,7 @@ export default function Admin() {
                 <select
                   value={productForm.category_id}
                   onChange={(e) => setProductForm({ ...productForm, category_id: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                 >
                   <option value="">Kateqoriya seçin</option>
                   {categories.map((cat) => (
@@ -693,7 +760,7 @@ export default function Admin() {
                   id="is_active"
                   checked={productForm.is_active}
                   onChange={(e) => setProductForm({ ...productForm, is_active: e.target.checked })}
-                  className="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500"
+                  className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
                 />
                 <label htmlFor="is_active" className="ml-2 text-sm text-gray-700">Aktiv</label>
               </div>
@@ -711,7 +778,7 @@ export default function Admin() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg transition-colors"
+                  className="px-6 py-3 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors"
                 >
                   {editingProduct ? 'Yadda saxla' : 'Əlavə et'}
                 </button>
@@ -786,7 +853,7 @@ export default function Admin() {
                   type="text"
                   value={categoryForm.name}
                   onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                   required
                 />
               </div>
@@ -797,7 +864,7 @@ export default function Admin() {
                   type="text"
                   value={categoryForm.slug}
                   onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                   placeholder="avtomatik yaradılacaq"
                 />
                 <p className="text-xs text-gray-500 mt-1">Boş buraxsanız, ad əsasında avtomatik yaradılacaq</p>
@@ -809,7 +876,7 @@ export default function Admin() {
                   value={categoryForm.description}
                   onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                 />
               </div>
 
@@ -819,7 +886,7 @@ export default function Admin() {
                   type="url"
                   value={categoryForm.image_url}
                   onChange={(e) => setCategoryForm({ ...categoryForm, image_url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
@@ -837,7 +904,7 @@ export default function Admin() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg transition-colors"
+                  className="px-6 py-3 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors"
                 >
                   {editingCategory ? 'Yadda saxla' : 'Əlavə et'}
                 </button>

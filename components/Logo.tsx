@@ -1,15 +1,17 @@
 import Image from 'next/image';
 
-export default function Logo({ className = '' }: { className?: string }) {
+export default function Logo({ className = '', size = 'default' }: { className?: string; size?: 'default' | 'large' }) {
+  const logoSize = size === 'large' ? { width: 80, height: 80, className: 'h-20 w-20' } : { width: 65, height: 65, className: 'h-16 w-16' };
+  
   return (
     <div className={`flex items-center ${className}`}>
-      <div className="rounded-full bg-white p-1 shadow-md border-2 border-yellow-100 flex-shrink-0">
+      <div className="rounded-full bg-white p-1.5 shadow-lg border-2 border-black flex-shrink-0">
         <Image
           src="/adora-logo.png"
           alt="Adora Fashion Logo"
-          width={50}
-          height={50}
-          className="h-12 w-12 object-contain rounded-full"
+          width={logoSize.width}
+          height={logoSize.height}
+          className={`${logoSize.className} object-contain rounded-full`}
           priority
         />
       </div>

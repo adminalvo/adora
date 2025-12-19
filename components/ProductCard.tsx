@@ -59,21 +59,21 @@ export default function ProductCard({ product }: ProductCardProps) {
       
       <div className="p-6">
         <h3 
-          className="text-xl font-semibold text-gray-800 mb-2 cursor-pointer hover:text-yellow-600 transition-colors"
+          className="text-xl font-semibold text-gray-800 mb-2 cursor-pointer hover:text-black transition-colors"
           onClick={handleCardClick}
         >
           {product.name}
         </h3>
         <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
         <div className="flex justify-between items-center">
-          <span className="text-2xl font-bold text-yellow-600">{product.price.toFixed(2)} ₼</span>
+          <span className="text-2xl font-bold text-black">{product.price.toFixed(2)} ₼</span>
           <button
             onClick={(e) => {
               e.stopPropagation();
               addToCart(product);
             }}
             disabled={!product.stock || product.stock === 0}
-            className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Səbətə At
           </button>

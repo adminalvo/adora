@@ -79,9 +79,9 @@ export default function ProductDetail() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <main className="min-h-screen bg-white flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin mx-auto"></div>
+            <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto"></div>
             <p className="mt-4 text-gray-600">Yüklənir...</p>
           </div>
         </main>
@@ -94,13 +94,13 @@ export default function ProductDetail() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-20">
+        <main className="min-h-screen bg-white py-20">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Məhsul Tapılmadı</h1>
             <p className="text-gray-600 mb-8">{error || 'Axtardığınız məhsul mövcud deyil'}</p>
             <button
               onClick={() => router.push('/')}
-              className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+              className="bg-black hover:bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
             >
               Ana Səhifəyə Qayıt
             </button>
@@ -114,7 +114,7 @@ export default function ProductDetail() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-12">
+      <main className="min-h-screen bg-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => router.back()}
@@ -164,7 +164,7 @@ export default function ProductDetail() {
               <h1 className="text-4xl font-bold text-gray-900 mb-4">{product.name}</h1>
               
               {product.category && (
-                <span className="inline-block bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full mb-4">
+                <span className="inline-block bg-gray-100 text-black text-sm font-medium px-3 py-1 rounded-full mb-4">
                   {product.category}
                 </span>
               )}
@@ -210,7 +210,7 @@ export default function ProductDetail() {
                 <button
                   onClick={handleAddToCart}
                   disabled={!product.stock || product.stock === 0}
-                  className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg flex items-center justify-center space-x-2"
+                  className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg flex items-center justify-center space-x-2"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

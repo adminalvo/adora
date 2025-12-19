@@ -8,7 +8,7 @@ export default function SocialMediaFloat() {
   return (
     <div className="fixed bottom-6 left-6 z-50">
       {/* Social Media Icons */}
-      <div className={`flex flex-col gap-3 mb-3 transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+      <div className={`flex flex-col gap-3 mb-3 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         {/* Instagram */}
         <a
           href="https://www.instagram.com/adora.fashiioon?utm_source=qr&igsh=MWNhdHR0ZHhtY2F5MA%3D%3D"
@@ -27,7 +27,7 @@ export default function SocialMediaFloat() {
           href="https://wa.me/994707800818"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-green-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110"
+          className="bg-green-500 text-white p-4 rounded-full shadow-lg transition-opacity hover:opacity-90"
           aria-label="WhatsApp"
         >
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@ export default function SocialMediaFloat() {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-yellow-400 hover:bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110"
+        className="bg-black hover:bg-gray-800 text-white p-4 rounded-full shadow-lg transition-colors"
         aria-label="Toggle social media"
       >
         {isOpen ? (

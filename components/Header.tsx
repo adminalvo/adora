@@ -51,45 +51,45 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-40">
+    <header className="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-200">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20 py-2">
+        <div className="flex justify-between items-center h-24 py-2">
           {/* Brand Name */}
           <Link href="/" className="flex items-center flex-shrink-0">
-            <Logo />
+            <Logo size="large" />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6 flex-1 justify-end">
-            <Link href="/" className="text-gray-700 hover:text-yellow-500 transition-colors font-medium">
+            <Link href="/" className="text-black hover:text-gray-600 transition-colors font-medium">
               {t('nav.home')}
             </Link>
-            <Link href="/about" className="text-gray-700 hover:text-yellow-500 transition-colors font-medium">
+            <Link href="/about" className="text-black hover:text-gray-600 transition-colors font-medium">
               {t('nav.about')}
             </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-yellow-500 transition-colors font-medium">
+            <Link href="/contact" className="text-black hover:text-gray-600 transition-colors font-medium">
               {t('nav.contact')}
             </Link>
 
             {/* Cart Icon */}
-            <Link href="/cart" className="relative text-gray-700 hover:text-yellow-500 transition-colors">
+            <Link href="/cart" className="relative text-black hover:text-gray-600 transition-colors">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {getTotalItems()}
                 </span>
               )}
             </Link>
 
             {/* Favorites Icon */}
-            <Link href="/favorites" className="relative text-gray-700 hover:text-yellow-500 transition-colors">
+            <Link href="/favorites" className="relative text-black hover:text-gray-600 transition-colors">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
               {favorites.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {favorites.length}
                 </span>
               )}
@@ -97,33 +97,33 @@ export default function Header() {
 
             {/* User Menu */}
             {user ? (
-              <div className="relative">
-                <div className="flex items-center space-x-2 px-4 py-2 bg-yellow-100 rounded-lg">
-                  <span className="text-sm font-medium text-gray-800">{user.name}</span>
-                  <button
-                    onClick={logout}
-                    className="text-gray-600 hover:text-red-600 transition-colors"
-                    title="Çıxış"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                  </button>
-                </div>
+              <div className="relative flex items-center space-x-2">
+                <Link href="/account" className="flex items-center space-x-2 px-4 py-2 border border-black rounded-lg hover:bg-black hover:text-white transition-colors">
+                  <span className="text-sm font-medium">{user.name}</span>
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-black hover:text-gray-600 transition-colors p-2"
+                  title="Çıxış"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
               </div>
             ) : (
-              <Link href="/login" className="text-gray-700 hover:text-yellow-500 transition-colors font-medium">
+              <Link href="/login" className="text-black hover:text-gray-600 transition-colors font-medium">
                 Giriş
               </Link>
             )}
 
             {/* Language Dropdown */}
-            <div className="relative border-l pl-4 ml-4 flex-shrink-0" ref={langDropdownRef}>
+            <div className="relative border-l border-gray-300 pl-4 ml-4 flex-shrink-0" ref={langDropdownRef}>
               <button
                 onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 bg-yellow-100 hover:bg-yellow-200 rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 border border-black hover:bg-black hover:text-white rounded-lg transition-colors"
               >
-                <span className="text-sm font-medium text-gray-800">{currentLanguage.short}</span>
+                <span className="text-sm font-medium">{currentLanguage.short}</span>
                 <svg
                   className={`w-4 h-4 text-gray-800 transition-transform ${isLangDropdownOpen ? 'rotate-180' : ''}`}
                   fill="none"
@@ -135,15 +135,15 @@ export default function Header() {
               </button>
               
               {isLangDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-black py-2 z-50">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => changeLanguage(lang.code)}
                       className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                         i18n.language === lang.code
-                          ? 'bg-yellow-50 text-yellow-600 font-medium'
-                          : 'text-gray-700 hover:bg-yellow-50'
+                          ? 'bg-black text-white font-medium'
+                          : 'text-black hover:bg-gray-100'
                       }`}
                     >
                       {lang.name}
@@ -162,7 +162,7 @@ export default function Header() {
           >
             <span
               className={`block w-7 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
-                isMenuOpen ? 'rotate-45 translate-y-2 bg-yellow-500' : ''
+                isMenuOpen ? 'rotate-45 translate-y-2 bg-black' : ''
               }`}
             ></span>
             <span
@@ -172,7 +172,7 @@ export default function Header() {
             ></span>
             <span
               className={`block w-7 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
-                isMenuOpen ? '-rotate-45 -translate-y-2 bg-yellow-500' : ''
+                isMenuOpen ? '-rotate-45 -translate-y-2 bg-black' : ''
               }`}
             ></span>
           </button>
@@ -197,7 +197,7 @@ export default function Header() {
             <Logo />
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-yellow-100 transition-colors"
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
               aria-label="Close menu"
             >
               <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,9 +212,9 @@ export default function Header() {
               <Link
                 href="/"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 font-medium text-lg group"
+                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-medium text-lg group"
               >
-                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 {t('nav.home')}
@@ -223,9 +223,9 @@ export default function Header() {
               <Link
                 href="/about"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 font-medium text-lg group"
+                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-medium text-lg group"
               >
-                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 {t('nav.about')}
@@ -234,9 +234,9 @@ export default function Header() {
               <Link
                 href="/contact"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 font-medium text-lg group"
+                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-medium text-lg group"
               >
-                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 {t('nav.contact')}
@@ -245,9 +245,9 @@ export default function Header() {
               <Link
                 href="/cart"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 font-medium text-lg group"
+                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-medium text-lg group"
               >
-                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 Səbət {getTotalItems() > 0 && `(${getTotalItems()})`}
@@ -256,9 +256,9 @@ export default function Header() {
               <Link
                 href="/favorites"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 font-medium text-lg group"
+                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-medium text-lg group"
               >
-                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 Favorilər {favorites.length > 0 && `(${favorites.length})`}
@@ -283,9 +283,9 @@ export default function Header() {
                 <Link
                   href="/login"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 font-medium text-lg group"
+                  className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-medium text-lg group"
                 >
-                  <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   Giriş
@@ -327,8 +327,8 @@ export default function Header() {
                         }}
                         className={`w-full text-left px-4 py-3 text-sm transition-colors ${
                           i18n.language === lang.code
-                            ? 'bg-yellow-50 text-yellow-600 font-medium'
-                            : 'text-gray-700 hover:bg-yellow-50'
+                            ? 'bg-black text-white font-medium'
+                            : 'text-gray-700 hover:bg-gray-50'
                         }`}
                       >
                         {lang.name}
