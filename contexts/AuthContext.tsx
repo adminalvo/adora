@@ -30,8 +30,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initAuth = async () => {
       try {
         // Check if Supabase is configured
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-          console.warn('Supabase not configured. Authentication features will not work.');
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        
+        if (!supabaseUrl || !supabaseAnonKey) {
+          console.error('❌ Supabase not configured!');
+          console.error('Missing environment variables:');
+          if (!supabaseUrl) console.error('  - NEXT_PUBLIC_SUPABASE_URL is missing');
+          if (!supabaseAnonKey) console.error('  - NEXT_PUBLIC_SUPABASE_ANON_KEY is missing');
+          console.error('');
+          console.error('📝 To fix this:');
+          console.error('1. Go to Vercel Dashboard → Settings → Environment Variables');
+          console.error('2. Add NEXT_PUBLIC_SUPABASE_URL (get it from Supabase Dashboard → Settings → API)');
+          console.error('3. Add NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_56hz_62iMtRNngOIBSGPAw__pnrE4qk');
+          console.error('4. Add SUPABASE_SERVICE_ROLE_KEY: sb_secret_Sd4f-FWiiM-dsaTcQdXnFw_A3KNzVet');
+          console.error('5. Redeploy your application');
+          console.error('');
+          console.error('📚 See HATA_COZUMU_ERR_NAME_NOT_RESOLVED.md for detailed instructions');
           setLoading(false);
           return;
         }
