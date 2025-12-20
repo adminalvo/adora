@@ -27,7 +27,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Poppins', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'Playfair Display', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
       },
     },
   },

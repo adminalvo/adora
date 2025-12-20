@@ -85,43 +85,71 @@ export default function Admin() {
 
   if (showPasswordModal) {
     return (
-      <>
-        <Header />
-        <main className="min-h-screen bg-white flex items-center justify-center">
-          <div className="max-w-md w-full mx-auto px-4">
-            <div className="bg-white rounded-lg shadow-xl border border-black p-8">
-              <h2 className="text-2xl font-bold text-black mb-6 text-center">Admin Girişi</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">Şifrə</label>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Logo/Brand */}
+          <div className="text-center mb-8">
+            <div className="inline-block">
+              <h1 className="text-3xl font-display font-bold text-black mb-2">ADORA</h1>
+              <p className="text-sm text-gray-500 font-sans">Admin Paneli</p>
+            </div>
+          </div>
+
+          {/* Admin Login Card */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-10">
+            <div className="mb-8">
+              <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-display font-bold text-black mb-2 text-center">Admin Girişi</h2>
+              <p className="text-sm text-gray-600 font-sans text-center">Admin paneline daxil olmaq üçün şifrəni daxil edin</p>
+            </div>
+            
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-sans font-semibold text-gray-900 mb-2">Admin Şifrəsi</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
                   <input
                     type="password"
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
-                    className="w-full px-4 py-3 border border-black rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                    placeholder="Admin şifrəsi"
+                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-black focus:border-black transition-all font-sans text-gray-900 placeholder-gray-400"
+                    placeholder="Şifrəni daxil edin"
                     autoFocus
                   />
                 </div>
-                <button
-                  onClick={handleAdminLogin}
-                  className="w-full bg-black text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors"
-                >
-                  Giriş Et
-                </button>
-                <button
-                  onClick={() => router.push('/')}
-                  className="w-full border border-black text-black font-semibold py-3 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  Geri
-                </button>
               </div>
+              
+              <button
+                onClick={handleAdminLogin}
+                className="w-full bg-black hover:bg-gray-900 text-white font-sans font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                Giriş Et
+              </button>
+              
+              <button
+                onClick={() => router.push('/')}
+                className="w-full border-2 border-gray-200 hover:border-black text-black font-sans font-semibold py-3.5 rounded-xl transition-all duration-200 hover:bg-gray-50"
+              >
+                Ana Səhifəyə Qayıt
+              </button>
             </div>
           </div>
-        </main>
-        <Footer />
-      </>
+
+          {/* Footer Link */}
+          <div className="mt-6 text-center">
+            <p className="text-xs text-gray-400 font-sans">© 2025 Adora Fashion. Bütün hüquqlar qorunur.</p>
+          </div>
+        </div>
+      </div>
     );
   }
 

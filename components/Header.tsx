@@ -51,23 +51,23 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-200">
+    <header className="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-24 py-2">
+        <div className="flex justify-between items-center h-20 py-2">
           {/* Brand Name */}
-          <Link href="/" className="flex items-center flex-shrink-0">
+          <Link href="/" className="flex items-center flex-shrink-0 group">
             <Logo size="large" />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6 flex-1 justify-end">
-            <Link href="/" className="text-black hover:text-gray-600 transition-colors font-medium">
+          <div className="hidden md:flex items-center space-x-1 flex-1 justify-end">
+            <Link href="/" className="px-4 py-2 text-sm font-sans font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200">
               {t('nav.home')}
             </Link>
-            <Link href="/about" className="text-black hover:text-gray-600 transition-colors font-medium">
+            <Link href="/about" className="px-4 py-2 text-sm font-sans font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200">
               {t('nav.about')}
             </Link>
-            <Link href="/contact" className="text-black hover:text-gray-600 transition-colors font-medium">
+            <Link href="/contact" className="px-4 py-2 text-sm font-sans font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200">
               {t('nav.contact')}
             </Link>
 
@@ -97,13 +97,16 @@ export default function Header() {
 
             {/* User Menu */}
             {user ? (
-              <div className="relative flex items-center space-x-2">
-                <Link href="/account" className="flex items-center space-x-2 px-4 py-2 border border-black rounded-lg hover:bg-black hover:text-white transition-colors">
-                  <span className="text-sm font-medium">{user.name}</span>
+              <div className="relative flex items-center space-x-2 ml-2">
+                <Link href="/account" className="flex items-center space-x-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition-all duration-200 shadow-sm hover:shadow-md">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="text-sm font-sans font-semibold">{user.name}</span>
                 </Link>
                 <button
                   onClick={logout}
-                  className="text-black hover:text-gray-600 transition-colors p-2"
+                  className="p-2 text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200"
                   title="Çıxış"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,20 +115,20 @@ export default function Header() {
                 </button>
               </div>
             ) : (
-              <Link href="/login" className="text-black hover:text-gray-600 transition-colors font-medium">
+              <Link href="/login" className="px-4 py-2 text-sm font-sans font-semibold text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200 ml-2">
                 Giriş
               </Link>
             )}
 
             {/* Language Dropdown */}
-            <div className="relative border-l border-gray-300 pl-4 ml-4 flex-shrink-0" ref={langDropdownRef}>
+            <div className="relative border-l border-gray-200 pl-4 ml-4 flex-shrink-0" ref={langDropdownRef}>
               <button
                 onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 border border-black hover:bg-black hover:text-white rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-3 py-2 text-gray-700 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200"
               >
-                <span className="text-sm font-medium">{currentLanguage.short}</span>
+                <span className="text-sm font-sans font-medium">{currentLanguage.short}</span>
                 <svg
-                  className={`w-4 h-4 text-gray-800 transition-transform ${isLangDropdownOpen ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 transition-transform duration-200 ${isLangDropdownOpen ? 'rotate-180' : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -135,15 +138,15 @@ export default function Header() {
               </button>
               
               {isLangDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-black py-2 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
                       onClick={() => changeLanguage(lang.code)}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                      className={`w-full text-left px-4 py-2.5 text-sm font-sans transition-colors ${
                         i18n.language === lang.code
-                          ? 'bg-black text-white font-medium'
-                          : 'text-black hover:bg-gray-100'
+                          ? 'bg-black text-white font-semibold'
+                          : 'text-gray-700 hover:bg-gray-50'
                       }`}
                     >
                       {lang.name}
@@ -154,24 +157,24 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Mobile Menu Button - Güzel Hamburger */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden relative w-10 h-10 flex flex-col items-center justify-center space-y-1.5 group"
+            className="md:hidden relative w-10 h-10 flex flex-col items-center justify-center space-y-1.5 group p-2 rounded-lg hover:bg-gray-50 transition-colors"
             aria-label="Menu"
           >
             <span
-              className={`block w-7 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
+              className={`block w-6 h-0.5 bg-gray-800 transition-all duration-300 ease-in-out ${
                 isMenuOpen ? 'rotate-45 translate-y-2 bg-black' : ''
               }`}
             ></span>
             <span
-              className={`block w-7 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
+              className={`block w-6 h-0.5 bg-gray-800 transition-all duration-300 ease-in-out ${
                 isMenuOpen ? 'opacity-0' : 'opacity-100'
               }`}
             ></span>
             <span
-              className={`block w-7 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
+              className={`block w-6 h-0.5 bg-gray-800 transition-all duration-300 ease-in-out ${
                 isMenuOpen ? '-rotate-45 -translate-y-2 bg-black' : ''
               }`}
             ></span>
@@ -212,7 +215,7 @@ export default function Header() {
               <Link
                 href="/"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center px-4 py-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-medium text-lg group"
+                className="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-black transition-all duration-200 font-sans font-medium text-base group"
               >
                 <svg className="w-5 h-5 mr-3 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -294,11 +297,11 @@ export default function Header() {
             </nav>
 
             {/* Language Selector */}
-            <div className="px-6 py-6 border-t border-gray-200 bg-gray-50">
+            <div className="px-6 py-6 border-t border-gray-100 bg-gray-50">
               <div className="relative" ref={mobileLangDropdownRef}>
                 <button
                   onClick={() => setIsMobileLangDropdownOpen(!isMobileLangDropdownOpen)}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-yellow-50 rounded-xl transition-all duration-200 shadow-sm border border-gray-200"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 rounded-lg transition-all duration-200 shadow-sm border border-gray-200"
                 >
                   <div className="flex items-center">
                     <svg className="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
