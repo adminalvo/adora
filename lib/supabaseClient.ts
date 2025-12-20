@@ -8,14 +8,16 @@ export const createClient = () => {
   if (!supabaseUrl || !supabaseAnonKey) {
     // In development, log a warning but don't crash
     if (process.env.NODE_ENV === 'development') {
-      console.warn('Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file');
+      console.error('❌ Missing Supabase environment variables!');
+      console.error('Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+      console.error('For Vercel: Add them in Settings > Environment Variables');
+      console.error('For local: Create .env.local file with these variables');
     }
     
-    // Return a mock client that will fail gracefully
-    // This prevents the app from crashing but Supabase operations will fail
-    return createBrowserClient<Database>(
-      supabaseUrl || 'https://placeholder.supabase.co',
-      supabaseAnonKey || 'placeholder-key'
+    // Don't create a client with invalid URL - this causes ERR_NAME_NOT_RESOLVED
+    // Instead, throw a clear error
+    throw new Error(
+      'Supabase configuration missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.'
     );
   }
 
