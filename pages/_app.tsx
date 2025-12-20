@@ -5,6 +5,7 @@ import Preloader from '@/components/Preloader';
 import CookieBanner from '@/components/CookieBanner';
 import SocialMediaFloat from '@/components/SocialMediaFloat';
 import ScrollToTop from '@/components/ScrollToTop';
+import Chatbot from '@/components/Chatbot';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CartProvider } from '@/contexts/CartContext';
 import { FavoritesProvider } from '@/contexts/FavoritesContext';
@@ -19,6 +20,7 @@ function App({ Component, pageProps }: AppProps) {
           <CookieBanner />
           <SocialMediaFloat />
           <ScrollToTop />
+          <Chatbot />
         </FavoritesProvider>
       </CartProvider>
     </AuthProvider>

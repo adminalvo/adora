@@ -1037,6 +1037,36 @@ export default function Admin() {
                           </div>
                           <div className="flex space-x-2">
                             <button
+                              onClick={async () => {
+                                try {
+                                  const response = await fetch('/api/ai/suggest-response', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ customerMessage: message.message }),
+                                  });
+                                  const data = await response.json();
+                                  if (data.suggestedResponse) {
+                                    if (confirm(`AI yanıt önerisi:\n\n${data.suggestedResponse}\n\nBu yanıtı kopyalamak istəyirsiniz?`)) {
+                                      navigator.clipboard.writeText(data.suggestedResponse);
+                                      alert('Yanıt kopyalandı!');
+                                    }
+                                  } else {
+                                    alert('Yanıt önerisi oluşturulamadı');
+                                  }
+                                } catch (error) {
+                                  console.error('AI response suggestion error:', error);
+                                  alert('Xəta baş verdi');
+                                }
+                              }}
+                              className="px-3 py-1 bg-blue-200 text-blue-700 rounded text-sm hover:bg-blue-300 flex items-center space-x-1"
+                              title="AI ilə yanıt öner"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              <span>AI Yanıt</span>
+                            </button>
+                            <button
                               onClick={() => handleMarkMessageRead(message.id, message.is_read)}
                               className={`px-3 py-1 rounded text-sm ${
                                 message.is_read
@@ -1054,7 +1084,7 @@ export default function Admin() {
                             </button>
                           </div>
                         </div>
-                        <p className="text-gray-700 whitespace-pre-wrap">{message.message}</p>
+                        <p className="text-gray-700 whitespace-pre-wrap mb-3">{message.message}</p>
                       </div>
                     ))}
                     
@@ -1107,7 +1137,43 @@ export default function Admin() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Təsvir</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-700">Təsvir</label>
+                  {productForm.name && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const category = categories.find(c => c.id === productForm.category_id);
+                          const response = await fetch('/api/ai/generate-description', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              type: 'product',
+                              name: productForm.name,
+                              category: category?.name,
+                            }),
+                          });
+                          const data = await response.json();
+                          if (data.description) {
+                            setProductForm({ ...productForm, description: data.description });
+                          } else {
+                            alert('Açıqlama yaradıla bilmədi');
+                          }
+                        } catch (error) {
+                          console.error('AI generation error:', error);
+                          alert('Xəta baş verdi');
+                        }
+                      }}
+                      className="text-xs bg-black text-white px-3 py-1 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-1"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span>AI ilə Yarad</span>
+                    </button>
+                  )}
+                </div>
                 <textarea
                   value={productForm.description}
                   onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
@@ -1283,7 +1349,41 @@ export default function Admin() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Təsvir</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-700">Təsvir</label>
+                  {categoryForm.name && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const response = await fetch('/api/ai/generate-description', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              type: 'category',
+                              name: categoryForm.name,
+                            }),
+                          });
+                          const data = await response.json();
+                          if (data.description) {
+                            setCategoryForm({ ...categoryForm, description: data.description });
+                          } else {
+                            alert('Açıqlama yaradıla bilmədi');
+                          }
+                        } catch (error) {
+                          console.error('AI generation error:', error);
+                          alert('Xəta baş verdi');
+                        }
+                      }}
+                      className="text-xs bg-black text-white px-3 py-1 rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-1"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span>AI ilə Yarad</span>
+                    </button>
+                  )}
+                </div>
                 <textarea
                   value={categoryForm.description}
                   onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}

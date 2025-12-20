@@ -3,7 +3,8 @@
  * Handles AI API requests through AI Gateway
  */
 
-const AI_GATEWAY_BASE_URL = 'https://api.anthropic.com/v1'; // Default Anthropic endpoint, can be configured
+// Vercel AI Gateway endpoint
+const AI_GATEWAY_BASE_URL = 'https://ai-gateway.vercel.sh/v1';
 const AI_GATEWAY_API_KEY = process.env.AI_GATEWAY_API_KEY;
 
 export interface AIGatewayRequest {
@@ -32,13 +33,28 @@ export async function sendAIGatewayRequest(
   }
 
   try {
-    const response = await fetch(AI_GATEWAY_BASE_URL + '/messages', {
+    // Vercel AI Gateway endpoint
+    const isVercelGateway = AI_GATEWAY_API_KEY?.startsWith('vck_');
+    
+    let apiUrl: string;
+    let headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (isVercelGateway) {
+      // Vercel AI Gateway format - uses Anthropic through gateway
+      apiUrl = `${AI_GATEWAY_BASE_URL}/anthropic/messages`;
+      headers['Authorization'] = `Bearer ${AI_GATEWAY_API_KEY}`;
+    } else {
+      // Direct Anthropic API
+      apiUrl = 'https://api.anthropic.com/v1/messages';
+      headers['x-api-key'] = AI_GATEWAY_API_KEY || '';
+      headers['anthropic-version'] = '2023-06-01';
+    }
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': AI_GATEWAY_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
+      headers,
       body: JSON.stringify({
         model: request.model || 'claude-3-5-sonnet-20241022',
         max_tokens: request.max_tokens || 1024,
