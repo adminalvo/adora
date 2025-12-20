@@ -682,29 +682,41 @@ export default function Admin() {
                 </div>
               ) : activeTab === 'products' ? (
                 <div>
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                     <h2 className="text-2xl font-semibold text-gray-800">Məhsullar</h2>
-                    <button
-                      onClick={() => {
-                        setEditingProduct(null);
-                        setProductForm({
-                          name: '',
-                          description: '',
-                          price: '',
-                          image_url: '',
-                          category_id: '',
-                          stock: '',
-                          is_active: true,
-                        });
-                        setShowProductModal(true);
-                      }}
-                      className="bg-black hover:bg-gray-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      <span>Yeni Məhsul</span>
-                    </button>
+                    <div className="flex gap-3">
+                      <input
+                        type="text"
+                        placeholder="Məhsul adı ilə axtar..."
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          loadData();
+                        }}
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                      />
+                      <button
+                        onClick={() => {
+                          setEditingProduct(null);
+                          setProductForm({
+                            name: '',
+                            description: '',
+                            price: '',
+                            image_url: '',
+                            category_id: '',
+                            stock: '',
+                            is_active: true,
+                          });
+                          setShowProductModal(true);
+                        }}
+                        className="bg-black hover:bg-gray-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span>Yeni Məhsul</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div className="overflow-x-auto">
@@ -1053,7 +1065,7 @@ export default function Admin() {
                     )}
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
