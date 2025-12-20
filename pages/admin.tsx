@@ -155,17 +155,6 @@ export default function Admin() {
     );
   }
 
-  useEffect(() => {
-    if (isAdmin) {
-      loadData();
-      loadStats();
-    }
-  }, [isAdmin, activeTab]);
-
-  if (!isAdmin) {
-    return null;
-  }
-
   const loadStats = async () => {
     try {
       const supabase = createClient();
@@ -300,6 +289,17 @@ export default function Admin() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isAdmin) {
+      loadData();
+      loadStats();
+    }
+  }, [isAdmin, activeTab]);
+
+  if (!isAdmin) {
+    return null;
+  }
 
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
