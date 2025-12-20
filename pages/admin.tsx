@@ -61,25 +61,27 @@ export default function Admin() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   useEffect(() => {
-    if (!authLoading) {
-      // Check if admin password is set in sessionStorage
-      const adminAuth = sessionStorage.getItem('admin_auth');
-      if (adminAuth === '202505') {
-        setIsAdmin(true);
-      } else {
-        setShowPasswordModal(true);
-      }
+    // Check if admin password is set in sessionStorage
+    const adminAuth = typeof window !== 'undefined' ? sessionStorage.getItem('admin_auth') : null;
+    if (adminAuth === '202505') {
+      setIsAdmin(true);
+      setShowPasswordModal(false);
+    } else {
+      setShowPasswordModal(true);
     }
-  }, [authLoading]);
+  }, []);
 
   const handleAdminLogin = () => {
     if (adminPassword === '202505') {
-      sessionStorage.setItem('admin_auth', '202505');
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('admin_auth', '202505');
+      }
       setIsAdmin(true);
       setShowPasswordModal(false);
       setAdminPassword('');
     } else {
       alert('Yanlış şifrə');
+      setAdminPassword('');
     }
   };
 
@@ -153,16 +155,16 @@ export default function Admin() {
     );
   }
 
-  if (!isAdmin) {
-    return null;
-  }
-
   useEffect(() => {
-    if (user && isAdmin) {
+    if (isAdmin) {
       loadData();
       loadStats();
     }
-  }, [user, activeTab, isAdmin]);
+  }, [isAdmin, activeTab]);
+
+  if (!isAdmin) {
+    return null;
+  }
 
   const loadStats = async () => {
     try {
