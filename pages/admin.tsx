@@ -1,7 +1,7 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
@@ -1329,3 +1329,11 @@ export default function Admin() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'az', ['common'])),
+    },
+  };
+};

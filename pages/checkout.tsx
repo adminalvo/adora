@@ -1,5 +1,5 @@
-'use client';
-
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
@@ -262,5 +262,13 @@ export default function Checkout() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? 'az', ['common'])),
+    },
+  };
+};
 
 // This page is client-side only and doesn't need getStaticProps
