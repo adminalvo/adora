@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -155,7 +155,7 @@ export default function Admin() {
     );
   }
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     try {
       const supabase = createClient();
       
@@ -206,9 +206,9 @@ export default function Admin() {
     } catch (error) {
       console.error('Error loading stats:', error);
     }
-  };
+  }, []);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const supabase = createClient();
@@ -288,14 +288,14 @@ export default function Admin() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, searchQuery, statusFilter]);
 
   useEffect(() => {
     if (isAdmin) {
       loadData();
       loadStats();
     }
-  }, [isAdmin, activeTab]);
+  }, [isAdmin, loadData, loadStats]);
 
   if (!isAdmin) {
     return null;
