@@ -250,38 +250,46 @@ CREATE POLICY "Users can delete their own cart items"
   USING (auth.uid() = user_id);
 
 -- Favorites policies
+DROP POLICY IF EXISTS "Users can view their own favorites" ON public.favorites;
 CREATE POLICY "Users can view their own favorites"
   ON public.favorites FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert their own favorites" ON public.favorites;
 CREATE POLICY "Users can insert their own favorites"
   ON public.favorites FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own favorites" ON public.favorites;
 CREATE POLICY "Users can delete their own favorites"
   ON public.favorites FOR DELETE
   USING (auth.uid() = user_id);
 
 -- Orders policies
+DROP POLICY IF EXISTS "Users can view their own orders" ON public.orders;
 CREATE POLICY "Users can view their own orders"
   ON public.orders FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create their own orders" ON public.orders;
 CREATE POLICY "Users can create their own orders"
   ON public.orders FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
 -- Allow authenticated users to view all orders (for admin panel)
+DROP POLICY IF EXISTS "Authenticated users can view all orders" ON public.orders;
 CREATE POLICY "Authenticated users can view all orders"
   ON public.orders FOR SELECT
   USING (auth.role() = 'authenticated');
 
 -- Allow authenticated users to update orders (for admin panel)
+DROP POLICY IF EXISTS "Authenticated users can update orders" ON public.orders;
 CREATE POLICY "Authenticated users can update orders"
   ON public.orders FOR UPDATE
   USING (auth.role() = 'authenticated');
 
 -- Order items policies
+DROP POLICY IF EXISTS "Users can view their own order items" ON public.order_items;
 CREATE POLICY "Users can view their own order items"
   ON public.order_items FOR SELECT
   USING (
@@ -292,6 +300,7 @@ CREATE POLICY "Users can view their own order items"
     )
   );
 
+DROP POLICY IF EXISTS "Users can create their own order items" ON public.order_items;
 CREATE POLICY "Users can create their own order items"
   ON public.order_items FOR INSERT
   WITH CHECK (
@@ -320,19 +329,23 @@ CREATE INDEX IF NOT EXISTS idx_contact_messages_read ON public.contact_messages(
 ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
 
 -- Contact messages policies (public can insert, admin can read)
+DROP POLICY IF EXISTS "Anyone can submit contact messages" ON public.contact_messages;
 CREATE POLICY "Anyone can submit contact messages"
   ON public.contact_messages FOR INSERT
   WITH CHECK (true);
 
 -- Allow authenticated users to view and manage contact messages (for admin panel)
+DROP POLICY IF EXISTS "Authenticated users can view contact messages" ON public.contact_messages;
 CREATE POLICY "Authenticated users can view contact messages"
   ON public.contact_messages FOR SELECT
   USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated users can update contact messages" ON public.contact_messages;
 CREATE POLICY "Authenticated users can update contact messages"
   ON public.contact_messages FOR UPDATE
   USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated users can delete contact messages" ON public.contact_messages;
 CREATE POLICY "Authenticated users can delete contact messages"
   ON public.contact_messages FOR DELETE
   USING (auth.role() = 'authenticated');
