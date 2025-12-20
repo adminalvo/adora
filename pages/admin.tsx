@@ -20,7 +20,7 @@ interface ContactMessage {
 export default function Admin() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'products' | 'messages' | 'orders' | 'categories'>('products');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'messages' | 'orders' | 'categories'>('dashboard');
   const [products, setProducts] = useState<Product[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +49,16 @@ export default function Admin() {
   const [adminPassword, setAdminPassword] = useState('');
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalOrders: 0,
+    totalMessages: 0,
+    unreadMessages: 0,
+    pendingOrders: 0,
+    totalRevenue: 0,
+  });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   useEffect(() => {
     if (!authLoading) {
@@ -120,20 +130,81 @@ export default function Admin() {
   }
 
   useEffect(() => {
-    if (user) {
+    if (user && isAdmin) {
       loadData();
+      loadStats();
     }
-  }, [user, activeTab]);
+  }, [user, activeTab, isAdmin]);
 
-  const loadData = async () => {
+  const loadStats = async () => {
     try {
       const supabase = createClient();
       
+      // Total products
+      const { count: productsCount } = await (supabase
+        .from('products') as any)
+        .select('*', { count: 'exact', head: true });
+
+      // Total orders
+      const { count: ordersCount } = await (supabase
+        .from('orders') as any)
+        .select('*', { count: 'exact', head: true });
+
+      // Total messages
+      const { count: messagesCount } = await (supabase
+        .from('contact_messages') as any)
+        .select('*', { count: 'exact', head: true });
+
+      // Unread messages
+      const { count: unreadCount } = await (supabase
+        .from('contact_messages') as any)
+        .select('*', { count: 'exact', head: true })
+        .eq('is_read', false);
+
+      // Pending orders
+      const { count: pendingCount } = await (supabase
+        .from('orders') as any)
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+
+      // Total revenue (delivered orders)
+      const { data: revenueData } = await (supabase
+        .from('orders') as any)
+        .select('total_amount')
+        .eq('status', 'delivered');
+
+      const totalRevenue = revenueData?.reduce((sum: number, order: any) => 
+        sum + parseFloat(order.total_amount || 0), 0) || 0;
+
+      setStats({
+        totalProducts: productsCount || 0,
+        totalOrders: ordersCount || 0,
+        totalMessages: messagesCount || 0,
+        unreadMessages: unreadCount || 0,
+        pendingOrders: pendingCount || 0,
+        totalRevenue,
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const supabase = createClient();
+      
       if (activeTab === 'products') {
-        const { data: productsData, error: productsError } = await (supabase
+        let productsQuery = (supabase
           .from('products') as any)
           .select('*')
           .order('created_at', { ascending: false });
+
+        if (searchQuery) {
+          productsQuery = productsQuery.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
+        }
+
+        const { data: productsData, error: productsError } = await productsQuery;
 
         if (productsError) throw productsError;
         setProducts((productsData || []) as Product[]);
@@ -145,17 +216,56 @@ export default function Admin() {
 
         if (categoriesError) throw categoriesError;
         setCategories(categoriesData || []);
-      } else {
-        const { data: messagesData, error: messagesError } = await (supabase
+      } else if (activeTab === 'orders') {
+        let query = (supabase
+          .from('orders') as any)
+          .select('*, order_items(*)')
+          .order('created_at', { ascending: false });
+
+        if (statusFilter !== 'all') {
+          query = query.eq('status', statusFilter);
+        }
+
+        if (searchQuery) {
+          query = query.or(`order_number.ilike.%${searchQuery}%,full_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
+        }
+
+        const { data: ordersData, error: ordersError } = await query;
+
+        if (ordersError) throw ordersError;
+        setOrders(ordersData || []);
+      } else if (activeTab === 'categories') {
+        const { data: categoriesData, error: categoriesError } = await (supabase
+          .from('categories') as any)
+          .select('*')
+          .order('name');
+
+        if (categoriesError) throw categoriesError;
+        setCategories(categoriesData || []);
+      } else if (activeTab === 'messages') {
+        let query = (supabase
           .from('contact_messages') as any)
           .select('*')
           .order('created_at', { ascending: false });
+
+        if (searchQuery) {
+          query = query.or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,message.ilike.%${searchQuery}%`);
+        }
+
+        if (statusFilter === 'unread') {
+          query = query.eq('is_read', false);
+        } else if (statusFilter === 'read') {
+          query = query.eq('is_read', true);
+        }
+
+        const { data: messagesData, error: messagesError } = await query;
 
         if (messagesError) throw messagesError;
         setMessages((messagesData || []) as ContactMessage[]);
       }
     } catch (error) {
       console.error('Error loading data:', error);
+      alert('Məlumat yüklənərkən xəta baş verdi');
     } finally {
       setLoading(false);
     }
@@ -294,7 +404,25 @@ export default function Admin() {
             <div className="border-b border-gray-200">
               <div className="flex overflow-x-auto">
                 <button
-                  onClick={() => setActiveTab('products')}
+                  onClick={() => {
+                    setActiveTab('dashboard');
+                    setSearchQuery('');
+                    setStatusFilter('all');
+                  }}
+                  className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
+                    activeTab === 'dashboard'
+                      ? 'text-black border-b-2 border-black'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  Dashboard
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveTab('products');
+                    setSearchQuery('');
+                    setStatusFilter('all');
+                  }}
                   className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'products'
                       ? 'text-black border-b-2 border-black'
@@ -304,7 +432,11 @@ export default function Admin() {
                   Məhsullar
                 </button>
                 <button
-                  onClick={() => setActiveTab('categories')}
+                  onClick={() => {
+                    setActiveTab('categories');
+                    setSearchQuery('');
+                    setStatusFilter('all');
+                  }}
                   className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'categories'
                       ? 'text-black border-b-2 border-black'
@@ -314,7 +446,11 @@ export default function Admin() {
                   Kateqoriyalar
                 </button>
                 <button
-                  onClick={() => setActiveTab('orders')}
+                  onClick={() => {
+                    setActiveTab('orders');
+                    setSearchQuery('');
+                    setStatusFilter('all');
+                  }}
                   className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'orders'
                       ? 'text-black border-b-2 border-black'
@@ -322,9 +458,18 @@ export default function Admin() {
                   }`}
                 >
                   Sifarişlər
+                  {stats.pendingOrders > 0 && (
+                    <span className="ml-2 bg-orange-500 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                      {stats.pendingOrders}
+                    </span>
+                  )}
                 </button>
                 <button
-                  onClick={() => setActiveTab('messages')}
+                  onClick={() => {
+                    setActiveTab('messages');
+                    setSearchQuery('');
+                    setStatusFilter('all');
+                  }}
                   className={`px-6 py-4 font-medium text-sm transition-colors relative whitespace-nowrap ${
                     activeTab === 'messages'
                       ? 'text-black border-b-2 border-black'
@@ -332,9 +477,9 @@ export default function Admin() {
                   }`}
                 >
                   Mesajlar
-                  {unreadCount > 0 && (
+                  {stats.unreadMessages > 0 && (
                     <span className="ml-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5">
-                      {unreadCount}
+                      {stats.unreadMessages}
                     </span>
                   )}
                 </button>
@@ -343,7 +488,199 @@ export default function Admin() {
 
             {/* Content */}
             <div className="p-8">
-              {activeTab === 'products' ? (
+              {activeTab === 'dashboard' ? (
+                <div>
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h2>
+                  
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Ümumi Məhsullar</p>
+                          <p className="text-3xl font-bold text-black">{stats.totalProducts}</p>
+                        </div>
+                        <div className="bg-black rounded-full p-3">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Ümumi Sifarişlər</p>
+                          <p className="text-3xl font-bold text-black">{stats.totalOrders}</p>
+                        </div>
+                        <div className="bg-black rounded-full p-3">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Gəlir (Çatdırılan)</p>
+                          <p className="text-3xl font-bold text-black">{stats.totalRevenue.toFixed(2)} ₼</p>
+                        </div>
+                        <div className="bg-black rounded-full p-3">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Gözləyən Sifarişlər</p>
+                          <p className="text-3xl font-bold text-orange-600">{stats.pendingOrders}</p>
+                        </div>
+                        <div className="bg-orange-100 rounded-full p-3">
+                          <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Ümumi Mesajlar</p>
+                          <p className="text-3xl font-bold text-black">{stats.totalMessages}</p>
+                        </div>
+                        <div className="bg-black rounded-full p-3">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Oxunmamış Mesajlar</p>
+                          <p className="text-3xl font-bold text-red-600">{stats.unreadMessages}</p>
+                        </div>
+                        <div className="bg-red-100 rounded-full p-3">
+                          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-4">Sürətli Əməliyyatlar</h3>
+                      <div className="space-y-3">
+                        <button
+                          onClick={() => {
+                            setActiveTab('products');
+                            setEditingProduct(null);
+                            setProductForm({
+                              name: '',
+                              description: '',
+                              price: '',
+                              image_url: '',
+                              category_id: '',
+                              stock: '',
+                              is_active: true,
+                            });
+                            setShowProductModal(true);
+                          }}
+                          className="w-full bg-black hover:bg-gray-800 text-white font-semibold px-4 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                          <span>Yeni Məhsul Əlavə Et</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setActiveTab('categories');
+                            setEditingCategory(null);
+                            setCategoryForm({
+                              name: '',
+                              slug: '',
+                              description: '',
+                              image_url: '',
+                            });
+                            setShowCategoryModal(true);
+                          }}
+                          className="w-full border border-black hover:bg-gray-50 text-black font-semibold px-4 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                          <span>Yeni Kateqoriya Əlavə Et</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-4">Son Fəaliyyətlər</h3>
+                      <div className="space-y-3">
+                        {stats.pendingOrders > 0 && (
+                          <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <div className="flex items-center space-x-3">
+                              <div className="bg-orange-100 rounded-full p-2">
+                                <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{stats.pendingOrders} gözləyən sifariş</p>
+                                <p className="text-xs text-gray-500">Dərhal baxılmalıdır</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => setActiveTab('orders')}
+                              className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                            >
+                              Bax →
+                            </button>
+                          </div>
+                        )}
+                        {stats.unreadMessages > 0 && (
+                          <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                            <div className="flex items-center space-x-3">
+                              <div className="bg-red-100 rounded-full p-2">
+                                <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{stats.unreadMessages} oxunmamış mesaj</p>
+                                <p className="text-xs text-gray-500">Yeni mesajlar var</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => setActiveTab('messages')}
+                              className="text-red-600 hover:text-red-700 text-sm font-medium"
+                            >
+                              Bax →
+                            </button>
+                          </div>
+                        )}
+                        {stats.pendingOrders === 0 && stats.unreadMessages === 0 && (
+                          <p className="text-sm text-gray-500 text-center py-4">Hələ yeni fəaliyyət yoxdur</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : activeTab === 'products' ? (
                 <div>
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-semibold text-gray-800">Məhsullar</h2>
@@ -382,7 +719,14 @@ export default function Admin() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {products.map((product) => (
+                        {products.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                            Hələ məhsul yoxdur
+                          </td>
+                        </tr>
+                      ) : (
+                        products.map((product) => (
                           <tr key={product.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
@@ -401,9 +745,9 @@ export default function Admin() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.stock}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                product.is_active && product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                               }`}>
-                                {product.stock > 0 ? 'Aktiv' : 'Stokda yox'}
+                                {product.is_active && product.stock > 0 ? 'Aktiv' : 'Stokda yox'}
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -433,14 +777,44 @@ export default function Admin() {
                               </button>
                             </td>
                           </tr>
-                        ))}
+                        ))
+                      )}
                       </tbody>
                     </table>
                   </div>
                 </div>
               ) : activeTab === 'orders' ? (
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-6">Sifarişlər</h2>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                    <h2 className="text-2xl font-semibold text-gray-800">Sifarişlər</h2>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input
+                        type="text"
+                        placeholder="Sifariş nömrəsi, ad, email ilə axtar..."
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          loadData();
+                        }}
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                      />
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => {
+                          setStatusFilter(e.target.value);
+                          loadData();
+                        }}
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                      >
+                        <option value="all">Bütün Statuslar</option>
+                        <option value="pending">Gözləyir</option>
+                        <option value="processing">Hazırlanır</option>
+                        <option value="shipped">Göndərildi</option>
+                        <option value="delivered">Çatdırıldı</option>
+                        <option value="cancelled">Ləğv edildi</option>
+                      </select>
+                    </div>
+                  </div>
                   
                   <div className="space-y-4">
                     {orders.map((order) => (
@@ -600,9 +974,35 @@ export default function Admin() {
                     )}
                   </div>
                 </div>
-              ) : (
+              ) : activeTab === 'messages' ? (
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-6">İletişim Mesajları</h2>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                    <h2 className="text-2xl font-semibold text-gray-800">İletişim Mesajları</h2>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input
+                        type="text"
+                        placeholder="Ad, email, mesaj ilə axtar..."
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          loadData();
+                        }}
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                      />
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => {
+                          setStatusFilter(e.target.value);
+                          loadData();
+                        }}
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                      >
+                        <option value="all">Hamısı</option>
+                        <option value="unread">Oxunmamış</option>
+                        <option value="read">Oxunmuş</option>
+                      </select>
+                    </div>
+                  </div>
                   
                   <div className="space-y-4">
                     {messages.map((message) => (

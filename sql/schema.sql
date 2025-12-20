@@ -176,15 +176,47 @@ CREATE POLICY "Users can update their own profile"
   ON public.users FOR UPDATE
   USING (auth.uid() = id);
 
--- Categories policies (public read)
+-- Categories policies (public read, admin write)
 CREATE POLICY "Categories are viewable by everyone"
   ON public.categories FOR SELECT
   USING (true);
 
--- Products policies (public read, admin write)
+-- Allow authenticated users to manage categories (for admin panel)
+CREATE POLICY "Authenticated users can insert categories"
+  ON public.categories FOR INSERT
+  WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can update categories"
+  ON public.categories FOR UPDATE
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can delete categories"
+  ON public.categories FOR DELETE
+  USING (auth.role() = 'authenticated');
+
+-- Products policies (public read active products, admin can read all)
 CREATE POLICY "Products are viewable by everyone"
   ON public.products FOR SELECT
   USING (is_active = true);
+
+-- Allow authenticated users to see all products (for admin panel)
+-- This policy allows authenticated users to see both active and inactive products
+CREATE POLICY "Authenticated users can view all products"
+  ON public.products FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+-- Allow authenticated users to manage products (for admin panel)
+CREATE POLICY "Authenticated users can insert products"
+  ON public.products FOR INSERT
+  WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can update products"
+  ON public.products FOR UPDATE
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can delete products"
+  ON public.products FOR DELETE
+  USING (auth.role() = 'authenticated');
 
 -- Cart items policies
 CREATE POLICY "Users can view their own cart"
@@ -224,6 +256,16 @@ CREATE POLICY "Users can view their own orders"
 CREATE POLICY "Users can create their own orders"
   ON public.orders FOR INSERT
   WITH CHECK (auth.uid() = user_id);
+
+-- Allow authenticated users to view all orders (for admin panel)
+CREATE POLICY "Authenticated users can view all orders"
+  ON public.orders FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+-- Allow authenticated users to update orders (for admin panel)
+CREATE POLICY "Authenticated users can update orders"
+  ON public.orders FOR UPDATE
+  USING (auth.role() = 'authenticated');
 
 -- Order items policies
 CREATE POLICY "Users can view their own order items"
@@ -268,8 +310,15 @@ CREATE POLICY "Anyone can submit contact messages"
   ON public.contact_messages FOR INSERT
   WITH CHECK (true);
 
--- Note: Admin read/update policies should be added via service role key or admin role
--- For now, we'll allow authenticated users to read (can be restricted later)
+-- Allow authenticated users to view and manage contact messages (for admin panel)
 CREATE POLICY "Authenticated users can view contact messages"
   ON public.contact_messages FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can update contact messages"
+  ON public.contact_messages FOR UPDATE
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can delete contact messages"
+  ON public.contact_messages FOR DELETE
   USING (auth.role() = 'authenticated');
