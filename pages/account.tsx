@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,8 +11,9 @@ import { createClient } from '@/lib/supabaseClient';
 export default function Account() {
   const { user, logout, loading: authLoading } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'favorites'>('profile');
   const [orders, setOrders] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [profileForm, setProfileForm] = useState({
     name: '',
@@ -22,6 +24,11 @@ export default function Account() {
     postal_code: '',
   });
   const [saving, setSaving] = useState(false);
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    totalSpent: 0,
+    favoriteCount: 0,
+  });
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -32,8 +39,11 @@ export default function Account() {
   useEffect(() => {
     if (user) {
       loadProfile();
+      loadStats();
       if (activeTab === 'orders') {
         loadOrders();
+      } else if (activeTab === 'favorites') {
+        loadFavorites();
       }
     }
   }, [user, activeTab]);
@@ -82,6 +92,61 @@ export default function Account() {
       console.error('Error loading orders:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadFavorites = async () => {
+    try {
+      setLoading(true);
+      const supabase = createClient();
+      const { data, error } = await (supabase
+        .from('favorites') as any)
+        .select('*, products(*)')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setFavorites(data || []);
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadStats = async () => {
+    try {
+      const supabase = createClient();
+      
+      // Total orders
+      const { count: ordersCount } = await (supabase
+        .from('orders') as any)
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user?.id);
+
+      // Total spent
+      const { data: ordersData } = await (supabase
+        .from('orders') as any)
+        .select('total_amount')
+        .eq('user_id', user?.id)
+        .eq('status', 'delivered');
+
+      const totalSpent = ordersData?.reduce((sum: number, order: any) => 
+        sum + parseFloat(order.total_amount || 0), 0) || 0;
+
+      // Favorite count
+      const { count: favoritesCount } = await (supabase
+        .from('favorites') as any)
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user?.id);
+
+      setStats({
+        totalOrders: ordersCount || 0,
+        totalSpent,
+        favoriteCount: favoritesCount || 0,
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
     }
   };
 
@@ -143,12 +208,30 @@ export default function Account() {
               <p className="text-gray-300 mt-1">Şəxsi məlumatlarınızı idarə edin</p>
             </div>
 
+            {/* Stats Cards */}
+            <div className="px-8 py-6 bg-gray-50 border-b border-gray-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                  <p className="text-sm text-gray-600 mb-1">Ümumi Sifarişlər</p>
+                  <p className="text-2xl font-bold text-black">{stats.totalOrders}</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                  <p className="text-sm text-gray-600 mb-1">Ümumi Xərclənmiş</p>
+                  <p className="text-2xl font-bold text-black">{stats.totalSpent.toFixed(2)} ₼</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                  <p className="text-sm text-gray-600 mb-1">Favori Məhsullar</p>
+                  <p className="text-2xl font-bold text-black">{stats.favoriteCount}</p>
+                </div>
+              </div>
+            </div>
+
             {/* Tabs */}
             <div className="border-b border-gray-200">
-              <div className="flex">
+              <div className="flex overflow-x-auto">
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className={`px-6 py-4 font-medium text-sm transition-colors ${
+                  className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'profile'
                       ? 'text-black border-b-2 border-black'
                       : 'text-gray-500 hover:text-gray-700'
@@ -158,7 +241,7 @@ export default function Account() {
                 </button>
                 <button
                   onClick={() => setActiveTab('orders')}
-                  className={`px-6 py-4 font-medium text-sm transition-colors ${
+                  className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === 'orders'
                       ? 'text-black border-b-2 border-black'
                       : 'text-gray-500 hover:text-gray-700'
@@ -166,13 +249,28 @@ export default function Account() {
                 >
                   Sifarişlərim
                 </button>
+                <button
+                  onClick={() => setActiveTab('favorites')}
+                  className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
+                    activeTab === 'favorites'
+                      ? 'text-black border-b-2 border-black'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  Favorilərim
+                </button>
               </div>
             </div>
 
             {/* Content */}
             <div className="p-8">
-              {activeTab === 'profile' ? (
-                <form onSubmit={handleSaveProfile} className="max-w-2xl space-y-6">
+              {activeTab === 'profile' && (
+                <div>
+                  <div className="mb-8">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Profil Məlumatları</h2>
+                    <p className="text-gray-600">Şəxsi məlumatlarınızı yeniləyin</p>
+                  </div>
+                  <form onSubmit={handleSaveProfile} className="max-w-2xl space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-black mb-2">Ad Soyad</label>
                     <input
@@ -254,7 +352,10 @@ export default function Account() {
                     </button>
                   </div>
                 </form>
-              ) : (
+                </div>
+              )}
+              
+              {activeTab === 'orders' && (
                 <div>
                   <h2 className="text-2xl font-semibold text-black mb-6">Sifarişlərim</h2>
                   
@@ -319,6 +420,63 @@ export default function Account() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {activeTab === 'favorites' && (
+                <div>
+                  <h2 className="text-2xl font-semibold text-black mb-6">Favori Məhsullarım</h2>
+                  
+                  {loading ? (
+                    <div className="text-center py-12">
+                      <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto"></div>
+                      <p className="mt-4 text-gray-600">Yüklənir...</p>
+                    </div>
+                  ) : favorites.length === 0 ? (
+                    <div className="text-center py-12">
+                      <svg className="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">Hələ favori məhsulunuz yoxdur</h3>
+                      <p className="text-gray-600 mb-6">Bəyəndiyiniz məhsulları favorilərə əlavə edin</p>
+                      <button
+                        onClick={() => router.push('/')}
+                        className="bg-black text-white font-semibold px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+                      >
+                        Məhsullara Bax
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {favorites.map((fav: any) => {
+                        const product = fav.products;
+                        if (!product) return null;
+                        return (
+                          <div key={fav.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                            {product.image_url && (
+                              <div className="relative h-48 bg-gray-100">
+                                <Image
+                                  src={product.image_url}
+                                  alt={product.name}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                            )}
+                            <div className="p-4">
+                              <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
+                              <p className="text-lg font-bold text-black mb-4">{parseFloat(product.price || 0).toFixed(2)} ₼</p>
+                              <button
+                                onClick={() => router.push(`/products/${product.id}`)}
+                                className="w-full bg-black hover:bg-gray-800 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm"
+                              >
+                                Detallara Bax
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

@@ -159,49 +159,58 @@ export default function ProductDetail() {
 
             {/* Product Info */}
             <div className="bg-white rounded-2xl shadow-xl p-8">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">{product.name}</h1>
-              
-              {product.category && (
-                <span className="inline-block bg-gray-100 text-black text-sm font-medium px-3 py-1 rounded-full mb-4">
-                  {product.category}
-                </span>
-              )}
-
               <div className="mb-6">
-                <span className="text-4xl font-bold text-yellow-600">{product.price.toFixed(2)} ₼</span>
+                {product.category && (
+                  <button
+                    onClick={() => router.push(`/categories/${product.category?.toLowerCase().replace(/\s+/g, '-')}`)}
+                    className="inline-block bg-gray-100 hover:bg-gray-200 text-black text-sm font-medium px-3 py-1 rounded-full mb-4 transition-colors"
+                  >
+                    {product.category}
+                  </button>
+                )}
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">{product.name}</h1>
+              </div>
+
+              <div className="mb-6 pb-6 border-b border-gray-200">
+                <span className="text-5xl font-bold text-black">{product.price.toFixed(2)} ₼</span>
               </div>
 
               {product.description && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-3">Təsvir</h2>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{product.description}</p>
+                <div className="mb-8">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Məhsul Haqqında</h2>
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">{product.description}</p>
                 </div>
               )}
 
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <label className="text-lg font-medium text-gray-900">Miqdar</label>
-                  <span className={`text-sm ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {product.stock > 0 ? `Stokda: ${product.stock}` : 'Stokda yox'}
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Stok Vəziyyəti:</span>
+                  <span className={`text-sm font-semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {product.stock > 0 ? `Stokda: ${product.stock} ədəd` : 'Stokda yox'}
                   </span>
                 </div>
+              </div>
+
+              <div className="mb-8">
+                <label className="block text-lg font-medium text-gray-900 mb-4">Miqdar Seçin</label>
                 <div className="flex items-center space-x-4">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
-                    className="w-12 h-12 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                    className="w-14 h-14 rounded-lg border-2 border-black hover:bg-black hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-black flex items-center justify-center transition-all font-bold text-xl"
                   >
-                    -
+                    −
                   </button>
-                  <span className="text-2xl font-semibold w-16 text-center">{quantity}</span>
+                  <span className="text-3xl font-bold w-20 text-center">{quantity}</span>
                   <button
                     onClick={() => setQuantity(Math.min(product.stock || 999, quantity + 1))}
                     disabled={quantity >= (product.stock || 999)}
-                    className="w-12 h-12 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                    className="w-14 h-14 rounded-lg border-2 border-black hover:bg-black hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-black flex items-center justify-center transition-all font-bold text-xl"
                   >
                     +
                   </button>
                 </div>
+                <p className="text-sm text-gray-500 mt-2">Ümumi: {(product.price * quantity).toFixed(2)} ₼</p>
               </div>
 
               <div className="space-y-4">
