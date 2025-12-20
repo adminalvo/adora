@@ -114,18 +114,23 @@ END;
 $$ language 'plpgsql';
 
 -- Triggers to auto-update updated_at
+DROP TRIGGER IF EXISTS update_users_updated_at ON public.users;
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_categories_updated_at ON public.categories;
 CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON public.categories
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_products_updated_at ON public.products;
 CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON public.products
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_cart_items_updated_at ON public.cart_items;
 CREATE TRIGGER update_cart_items_updated_at BEFORE UPDATE ON public.cart_items
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_orders_updated_at ON public.orders;
 CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON public.orders
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -151,6 +156,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS set_order_number_trigger ON public.orders;
 CREATE TRIGGER set_order_number_trigger
   BEFORE INSERT ON public.orders
   FOR EACH ROW
@@ -177,19 +183,23 @@ CREATE POLICY "Users can update their own profile"
   USING (auth.uid() = id);
 
 -- Categories policies (public read, admin write)
+DROP POLICY IF EXISTS "Categories are viewable by everyone" ON public.categories;
 CREATE POLICY "Categories are viewable by everyone"
   ON public.categories FOR SELECT
   USING (true);
 
 -- Allow authenticated users to manage categories (for admin panel)
+DROP POLICY IF EXISTS "Authenticated users can insert categories" ON public.categories;
 CREATE POLICY "Authenticated users can insert categories"
   ON public.categories FOR INSERT
   WITH CHECK (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated users can update categories" ON public.categories;
 CREATE POLICY "Authenticated users can update categories"
   ON public.categories FOR UPDATE
   USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Authenticated users can delete categories" ON public.categories;
 CREATE POLICY "Authenticated users can delete categories"
   ON public.categories FOR DELETE
   USING (auth.role() = 'authenticated');
@@ -219,18 +229,22 @@ CREATE POLICY "Authenticated users can delete products"
   USING (auth.role() = 'authenticated');
 
 -- Cart items policies
+DROP POLICY IF EXISTS "Users can view their own cart" ON public.cart_items;
 CREATE POLICY "Users can view their own cart"
   ON public.cart_items FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert their own cart items" ON public.cart_items;
 CREATE POLICY "Users can insert their own cart items"
   ON public.cart_items FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own cart items" ON public.cart_items;
 CREATE POLICY "Users can update their own cart items"
   ON public.cart_items FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own cart items" ON public.cart_items;
 CREATE POLICY "Users can delete their own cart items"
   ON public.cart_items FOR DELETE
   USING (auth.uid() = user_id);
